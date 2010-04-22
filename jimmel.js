@@ -109,3 +109,8 @@ Jimmel.render = function render(markup, params){
     }
   }
 }
+
+if (exports)
+  exports.render = function(markup, params){
+    return Jimmel.render(markup, params)
+  }
