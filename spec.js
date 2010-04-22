@@ -2,9 +2,10 @@ require('./describe')
 require('./jimmel')
 var File = require('file')
 var exampleText = File.read('example.js')
+var example2Text = File.read('example2.js')
 
-var jimmel = new Jimmel()
-with(jimmel){
+
+with(Jimmel){
 describe('Jimmel')
   .should('gen tag', function(){
     expect(p('I am a paragraph')).toBe('<p>I am a paragraph</p>')
@@ -26,7 +27,7 @@ describe('Jimmel')
     expect(render(exampleText)).toBe('<!DOCTYPE html><html lang="en"><head><title>Jimmel Example Page</title></head><body><h1>Jimmel Example Page</h1><p>Jimmel is a Markup Language based on Javascript.</p><h2>Example</h2><pre>\n\
   p(\'I am a paragraph.\')</pre></body></html>')
   })
-  .should('pretty print render()', function(){
+/*  .should('pretty print render()', function(){
     expect(new Jimmel({pretty: true}).render(exampleText, {pretty: true})).toBe(
 '<!DOCTYPE html>\n\
 <html lang="en">\n\
@@ -41,6 +42,19 @@ describe('Jimmel')
   p(\'I am a paragraph.\')</pre>\n\
 </body>\n\
 </html>')
+  })*/
+  .should('render with params', function(){
+    expect(render(example2Text, {name: 'Jason'})).toBe('<span>Jason</span>')
+  })
+  .should('have url()', function(){
+    expect(url('/blah', {one: 1, two: '1 2'})).toBe('/blah?one=1&two=1%202')
+  })
+  .should('Be able to change doctype', function(){
+    var orgDoctype = Jimmel.doctype
+    Jimmel.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+    expect(render(exampleText)).toBe(Jimmel.doctype + '<html lang="en"><head><title>Jimmel Example Page</title></head><body><h1>Jimmel Example Page</h1><p>Jimmel is a Markup Language based on Javascript.</p><h2>Example</h2><pre>\n\
+  p(\'I am a paragraph.\')</pre></body></html>')
+    Jimmel.doctype = orgDoctype
   })
 }
 
